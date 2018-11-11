@@ -12,9 +12,9 @@ def main():
         bot.ride()
         bot.show()
 
-        key = cv2.waitKey(20)
+        key = cv2.waitKey(5)
 
-        print( bot.sonicRead(10, 8))
+        print(bot.sonicRead(10, 8))
 
         if key == ord('w'):
             bot.start(bot.B, 50)

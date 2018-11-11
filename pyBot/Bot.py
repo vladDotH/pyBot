@@ -34,6 +34,11 @@ class Controller(Arduino):
         self.A = Motor(5, 4)
         self.B = Motor(6, 7)
 
+        self.pinMode(4, arduino.mode.OUT)
+        self.pinMode(5, arduino.mode.OUT)
+        self.pinMode(6, arduino.mode.OUT)
+        self.pinMode(7, arduino.mode.OUT)
+
     def start(self, motor, speed):
         if motor.speed == speed:
             return
