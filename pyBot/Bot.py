@@ -231,7 +231,7 @@ class ImageLogic(Camera, GUIService):
 
     def findLine(self) -> int:
         avg = 0
-        cnt = 0
+        cnt = 1
         for cont in self.contours:
             for dot in cont:
                 x, y = dot[0]

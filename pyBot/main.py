@@ -5,14 +5,16 @@ from Bot import *
 
 
 def main():
-    bot = Liner(0, "COM1")
+    bot = Liner(0, "COM5")
 
     while True:
 
         bot.ride()
         bot.show()
 
-        key = cv2.waitKey(1)
+        key = cv2.waitKey(20)
+
+        print( bot.sonicRead(10, 8))
 
         if key == ord('w'):
             bot.start(bot.B, 50)
