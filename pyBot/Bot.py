@@ -221,6 +221,7 @@ class ImageLogic(Camera, GUIService):
 
         self.size = (640, 480)
 
+        self.image = None
         self.gray = None
         self.bin = None
 
@@ -236,7 +237,7 @@ class ImageLogic(Camera, GUIService):
 
         self.gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 
-        ret, self.bin = cv2.threshold(self.gray, self.down, self.high, cv2.THRESH_BINARY)
+        ret, self.bin = cv2.threshold(self.gray, self.down, self.high, cv2.THRESH_BINARY_INV)
 
         ret, self.contours, hierarchy = cv2.findContours(self.bin, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -272,7 +273,9 @@ class Liner(ImageLogic, Controller):
     def ride(self):
         self.makeImage()
 
-        line = self.findLine()
+        line = - abs(self.x1 - self.x2) // 2 + self.findLine()
+
+        print( line )
 
         speed = line * self.prop \
                 + line * self.cube
