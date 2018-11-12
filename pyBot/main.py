@@ -5,7 +5,7 @@ from Bot import *
 
 
 def main():
-    bot = Liner(0, "COM5")
+    bot = Liner(0, "COM1")
 
     while True:
 
@@ -14,7 +14,7 @@ def main():
 
         key = cv2.waitKey(5)
 
-        print(bot.sonicRead(10, 8))
+        # print(bot.sonicRead(10, 8))
 
         if key == ord('w'):
             bot.start(bot.B, 50)

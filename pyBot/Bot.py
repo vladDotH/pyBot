@@ -70,6 +70,7 @@ class Camera:
 
 
 class widgetNames:
+    frameImg = "frame"
     rgbImg = "rgb"
     grayImg = "gray"
     binImg = "binary"
@@ -121,10 +122,12 @@ class GUIService:
 
         self.scope = 1
 
-        self.gray = None
         self.frame = None
+        self.image = None
+        self.gray = None
         self.bin = None
 
+        cv2.namedWindow(widgetNames.frameImg)
         cv2.namedWindow(widgetNames.rgbImg)
         cv2.namedWindow(widgetNames.grayImg)
         cv2.namedWindow(widgetNames.binImg)
@@ -152,7 +155,8 @@ class GUIService:
         cv2.setTrackbarMin(widgetNames.Roi.scope, widgetNames.sizeTracks, 1)
 
     def show(self):
-        cv2.imshow(widgetNames.rgbImg, self.frame)
+        cv2.imshow(widgetNames.frameImg, self.frame)
+        cv2.imshow(widgetNames.rgbImg, self.image)
         cv2.imshow(widgetNames.grayImg, self.gray)
         cv2.imshow(widgetNames.binImg, self.bin)
 
@@ -197,11 +201,14 @@ class GUIService:
         self.x2 = self.camSize[0] // self.scope
         self.y2 = self.camSize[1] // self.scope
 
-        cv2.setTrackbarPos(widgetNames.Roi.x1, widgetNames.sizeTracks, 0)
-        cv2.setTrackbarPos(widgetNames.Roi.y1, widgetNames.sizeTracks, 0)
+        cv2.setTrackbarMax(widgetNames.Roi.x1, widgetNames.sizeTracks, self.x2)
+        cv2.setTrackbarMax(widgetNames.Roi.y1, widgetNames.sizeTracks, self.y2)
 
         cv2.setTrackbarMax(widgetNames.Roi.x2, widgetNames.sizeTracks, self.x2)
         cv2.setTrackbarMax(widgetNames.Roi.y2, widgetNames.sizeTracks, self.y2)
+
+        cv2.setTrackbarPos(widgetNames.Roi.x1, widgetNames.sizeTracks, 0)
+        cv2.setTrackbarPos(widgetNames.Roi.y1, widgetNames.sizeTracks, 0)
 
         cv2.setTrackbarPos(widgetNames.Roi.x2, widgetNames.sizeTracks, self.x2)
         cv2.setTrackbarPos(widgetNames.Roi.y2, widgetNames.sizeTracks, self.y2)
@@ -223,16 +230,19 @@ class ImageLogic(Camera, GUIService):
         self.read()
         self.frame = cv2.resize(self.frame, (self.size[0] // self.scope, self.size[1] // self.scope))
 
-        self.frame = self.frame[self.y1:self.y2, self.x1: self.x2]
+        self.image = self.frame[self.y1:self.y2, self.x1: self.x2]
 
-        self.frame = cv2.blur(self.frame, (3, 3))
+        self.image = cv2.blur(self.image, (3, 3))
 
-        self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+        self.gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 
         ret, self.bin = cv2.threshold(self.gray, self.down, self.high, cv2.THRESH_BINARY)
 
         ret, self.contours, hierarchy = cv2.findContours(self.bin, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
         # cv2.drawContours(self.frame, contours, -1, (0, 0, 255), 2)
+
+        cv2.rectangle(self.frame, (self.x1, self.y1), (self.x2, self.y2), (0, 255, 255), 1)
 
     def findLine(self) -> int:
         avg = 0
@@ -240,12 +250,12 @@ class ImageLogic(Camera, GUIService):
         for cont in self.contours:
             for dot in cont:
                 x, y = dot[0]
-                cv2.circle(self.frame, (x, y), 4, (0, 255, 0), -1)
+                cv2.circle(self.image, (x, y), 4, (0, 255, 0), -1)
                 avg += x
                 cnt += 1
 
         lineX = int(avg / cnt)
-        cv2.circle(self.frame, (lineX, 120), 5, (255, 0, 0), -1)
+        cv2.circle(self.image, (lineX, 120), 5, (255, 0, 0), -1)
 
         return lineX
 
