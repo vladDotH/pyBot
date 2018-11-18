@@ -5,7 +5,7 @@ from Bot import *
 
 
 def main():
-    bot = Liner(0, "COM1")
+    bot = Liner(0, "COM5")
 
     while True:
 
@@ -17,16 +17,27 @@ def main():
         # print(bot.sonicRead(10, 8))
 
         if key == ord('w'):
-            bot.start(bot.B, 50)
+            bot.start(bot.B, 150)
+            bot.start(bot.A, -150)
 
-        if key == ord('s'):
-            bot.start(bot.B, -50)
+        elif key == ord('s'):
+            bot.start(bot.B, -100)
+            bot.start(bot.A, 100)
 
-        if key == ord('e'):
+        elif key == ord('e'):
+            bot.start(bot.B, 0)
+            bot.start(bot.A, 0)
+
+        elif key == ord('q'):
+            break
+
+        else:
+            bot.start(bot.A, 0)
             bot.start(bot.B, 0)
 
-        if key == ord('q'):
-            break
+
+    bot.start(bot.B, 0)
+    bot.start(bot.A, 0)
 
 
 if __name__ == "__main__":

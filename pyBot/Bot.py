@@ -1,3 +1,6 @@
+import threading
+import time
+
 import cv2
 import numpy as np
 
@@ -39,6 +42,10 @@ class Controller(Arduino):
         self.pinMode(6, arduino.mode.OUT)
         self.pinMode(7, arduino.mode.OUT)
 
+        self.USListenerAlive = False
+        self.sleepTime = 0.05
+        self.USData = None
+
     def start(self, motor, speed):
         if motor.speed == speed:
             return
@@ -55,6 +62,17 @@ class Controller(Arduino):
 
         self.digitalWrite(motor.revPin, direction)
         self.analogWrite(motor.mainPin, speed)
+
+    def sonicListenerStart(self, trig, echo):
+        if self.USListenerAlive:
+            def sonicListenerThread():
+                self.USListenerAlive = True
+                while self.USListenerAlive:
+                    time.sleep(self.sleepTime)
+                    self.USData = self.sonicRead(trig, echo)
+
+            usThread = threading.Thread(sonicListenerThread)
+            usThread.start()
 
 
 class Camera:
@@ -273,12 +291,12 @@ class Liner(ImageLogic, Controller):
     def ride(self):
         self.makeImage()
 
-        line = - abs(self.x1 - self.x2) // 2 + self.findLine()
+        line = self.findLine() - abs(self.x1 - self.x2) // 2
 
-        print( line )
+        print(line)
 
-        speed = line * self.prop \
-                + line * self.cube
+        speed = line * self.prop / 100 \
+                + line * self.cube / 10000
 
         if self.automate == True:
             self.start(self.A, self.base + speed)

@@ -6,14 +6,16 @@ import time
 class mode(enumerate):
     LOW = 0
     HIGH = 1
+
     DIGITAL = 2
     ANALOG = 3
 
     PinMode = 4
-    OUT = 0
-    IN = 1
 
-    UltraSonicGet = 255
+    OUT = 5
+    IN = 6
+
+    UltraSonicGet = 7
 
 
 class Arduino:
