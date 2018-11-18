@@ -64,14 +64,19 @@ class Controller(Arduino):
         self.analogWrite(motor.mainPin, speed)
 
     def sonicListenerStart(self, trig, echo):
-        if self.USListenerAlive:
+        if not self.USListenerAlive:
+            self.USListenerAlive = True
+
             def sonicListenerThread():
-                self.USListenerAlive = True
                 while self.USListenerAlive:
-                    time.sleep(self.sleepTime)
+                    # time.sleep(self.sleepTime)
+                    threading.Event().wait(0.1)
+
                     self.USData = self.sonicRead(trig, echo)
 
-            usThread = threading.Thread(sonicListenerThread)
+                    # print("readed : ", self.USData)
+
+            usThread = threading.Thread(target=sonicListenerThread)
             usThread.start()
 
 
@@ -293,7 +298,7 @@ class Liner(ImageLogic, Controller):
 
         line = self.findLine() - abs(self.x1 - self.x2) // 2
 
-        print(line)
+        # print(line)
 
         speed = line * self.prop / 100 \
                 + line * self.cube / 10000

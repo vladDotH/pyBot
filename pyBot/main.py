@@ -7,6 +7,8 @@ from Bot import *
 def main():
     bot = Liner(0, "COM5")
 
+    bot.sonicListenerStart(10, 8)
+
     while True:
 
         bot.ride()
@@ -14,7 +16,7 @@ def main():
 
         key = cv2.waitKey(5)
 
-        # print(bot.sonicRead(10, 8))
+        print(bot.USData)
 
         if key == ord('w'):
             bot.start(bot.B, 150)
@@ -38,6 +40,8 @@ def main():
 
     bot.start(bot.B, 0)
     bot.start(bot.A, 0)
+
+    bot.USListenerAlive = False
 
 
 if __name__ == "__main__":
