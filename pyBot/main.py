@@ -1,11 +1,10 @@
 import numpy as np
 import cv2
-import Bot
-from Bot import *
-
+from pyBot import lineBot
+from pyBot.lineBot import *
 
 def main():
-    bot = Liner(0, "COM5")
+    bot = Liner(0, "/dev/ttyACM0")
 
     bot.sonicListenerStart(10, 8)
 
