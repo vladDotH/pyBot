@@ -33,6 +33,8 @@ class Motor:
         if speed == self.speed:
             return
 
+        self.speed = speed
+
         if speed > 0:
             GPIO.output(self.dir1, GPIO.HIGH)
             GPIO.output(self.dir2, GPIO.LOW)
